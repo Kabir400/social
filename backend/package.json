@@ -1,0 +1,16 @@
+{
+  "name": "social",
+  "version": "1.0.0",
+  "description": "this is basic social media application to learn about the power of mongodb aggrigation pipeline",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kabir",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.6.0"
+  }
+}
