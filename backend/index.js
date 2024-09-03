@@ -1,9 +1,24 @@
-const express = require("express");
 require("dotenv").config({ path: "./.env" });
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
 const connectDB = require("./config/db.js");
+const multer = require("multer");
 
 const server = express();
+
+server.use(express.json());
+server.user(cookieParser());
+
+server.use(
+  session({
+    secret: "your-secret-key", // Used to sign the session ID cookie
+    resave: false, // Prevents session from being saved back to the session store unless modified
+    saveUninitialized: false, // Prevents uninitialized sessions from being saved
+    cookie: { secure: false }, // Use 'true' if you're using HTTPS
+  })
+);
 
 const port = process.env.PORT || 4040;
 
@@ -12,9 +27,14 @@ const port = process.env.PORT || 4040;
 server.use((err, _, res) => {
   //variables
   err.status = err.status || 500;
-  err.message = err.message || "Something went wrong";
   err.success = err.success || false;
   err.data = err.data || null;
+
+  if (err instanceof multer.MulterError) {
+    err.message = "File upload error";
+  } else {
+    err.message = err.message || "Something went wrong";
+  }
 
   //sending response to the client
   res.status(err.status).json({
