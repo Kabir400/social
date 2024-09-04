@@ -3,13 +3,15 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
+const UserRouter = require("./routes/user.router.js");
+
 const connectDB = require("./config/db.js");
 const multer = require("multer");
 
 const server = express();
 
 server.use(express.json());
-server.user(cookieParser());
+server.use(cookieParser());
 
 server.use(
   session({
@@ -22,9 +24,12 @@ server.use(
 
 const port = process.env.PORT || 4040;
 
+//router
+server.use("/api/v1", UserRouter);
+
 //..............................................................
 //error middleware
-server.use((err, _, res) => {
+server.use((err, req, res, next) => {
   //variables
   err.status = err.status || 500;
   err.success = err.success || false;

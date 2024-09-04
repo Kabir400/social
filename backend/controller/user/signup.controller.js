@@ -1,20 +1,28 @@
-const TryCatch = require("./utils/TryCatch.js");
-const ApiError = require("./utils/ApiError.js");
-const ApiResponse = require("./utils/ApiResponse.js");
-const cloudinaryUpload = require("./utils/cloudinary.js");
-const { generateOtp, sendOtp } = require("./utils/sendMail.js");
+const TryCatch = require("../../utils/TryCatch.js");
+const ApiError = require("../../utils/ApiError.js");
+const ApiResponse = require("../../utils/ApiResponse.js");
+const uploadCloudinary = require("../../utils/cloudinary.js");
+const { generateOtp, sendOtp } = require("../../utils/sendMail.js");
+const sendCookies = require("../../utils/sendCookies.js");
 
 const fs = require("fs");
 
-const userModel = require("./models/user.model.js");
+const userModel = require("../../model/user.model.js");
 
 //...........................................................
 //singup controller
-const singUp = TryCatch(async (req, res, next) => {
+const signUp = TryCatch(async (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     next(new ApiError(400, "Please fill all the fields", null, false));
+  }
+
+  //validate the user is already exist or not
+  const userExist = await userModel.findOne({ email });
+
+  if (userExist) {
+    throw new ApiError(400, "User already exist", null, false);
   }
 
   //generate otp and send mail
@@ -41,35 +49,54 @@ const verifyOtp = TryCatch(async (req, res, next) => {
   const tempUser = req.session.tempUser;
 
   if (!tempUser) {
-    next(new ApiError(400, "Session expired or Invalid Otp", null, false));
+    throw new ApiError(400, "Session expired or Invalid Otp", null, false);
   }
 
   if (tempUser.otp !== otp) {
-    next(new ApiError(400, "Invalid OTP", null, false));
+    throw new ApiError(400, "Invalid OTP", null, false);
   }
 
   const user = new userModel({
     name: tempUser.name,
     email: tempUser.email,
     password: tempUser.password,
-    avater: tempUser.avater,
+    avater: null,
   });
 
+  console.log(tempUser.avater);
+
+  // if(fs.existsSync(tempUser.avatar)){//it is also not working}
+
   if (tempUser.avatar) {
+    console.log("\nexecuting this cloudinary code");
+    //tempUser.avater is valid ex->C:\Users\91740\Desktop\social\backend\assets\temp\avater-1725463005416.png but is why the if block is't executing
     try {
-      const cloudinaryResult = await cloudinaryUpload(tempUser.avatar, next);
+      const cloudinaryResult = await uploadCloudinary(tempUser.avatar, next);
       user.avatar = cloudinaryResult.secure_url;
       fs.unlinkSync(tempUser.avatar);
     } catch (uploadError) {
-      return next(
-        new ApiError(500, "Error uploading file", uploadError, false)
-      );
+      throw new ApiError(500, "Error uploading file", null, false);
     }
   }
 
+  const accessToken = user.generateToken(
+    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_EXPIRY
+  );
+
+  const refreshToken = user.generateToken(
+    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_EXPIRY
+  );
+
   await user.save();
+
+  req.session.tempUser = null;
+
+  sendCookies(res, "accessToken", accessToken, 5);
+  sendCookies(res, "refreshToken", refreshToken, 15);
 
   res.json(new ApiResponse(200, null, "User registered successfully"));
 });
 
-module.exports = singUp;
+module.exports = { signUp, verifyOtp };

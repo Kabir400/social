@@ -1,8 +1,26 @@
 const express = require("express");
-const userModel = require("../models/user.model.js");
+
+const {
+  userValidator,
+  userValidate,
+} = require("../middleware/expressValidator.js");
+
+const upload = require("../middleware/multer.js");
+
+const {
+  signUp,
+  verifyOtp,
+} = require("../controller/user/signup.controller.js");
 
 const router = express.Router();
 
-router.post("/signup", (req, res) => {
-  const { name, email, password } = req.body;
-});
+router.post(
+  "/signup",
+  upload.single("avater"),
+  userValidator,
+  userValidate,
+  signUp
+);
+router.post("/verify-otp", verifyOtp);
+
+module.exports = router;
