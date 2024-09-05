@@ -12,15 +12,18 @@ const {
   verifyOtp,
 } = require("../controller/user/signup.controller.js");
 
+const login = require("../controller/user/login.controller.js");
+
 const router = express.Router();
 
 router.post(
   "/signup",
-  upload.single("avater"),
+  upload.single("avatar"),
   userValidator,
   userValidate,
   signUp
 );
 router.post("/verify-otp", verifyOtp);
+router.post("/login", login);
 
 module.exports = router;

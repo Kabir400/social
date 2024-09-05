@@ -35,7 +35,7 @@ const signUp = TryCatch(async (req, res, next) => {
       email,
       password,
       otp,
-      avater: req.file ? req.file.path : null,
+      avatar: req.file ? req.file.path : null,
     };
 
     res.json(new ApiResponse(200, null, "OTP sent to your email"));
@@ -60,21 +60,15 @@ const verifyOtp = TryCatch(async (req, res, next) => {
     name: tempUser.name,
     email: tempUser.email,
     password: tempUser.password,
-    avater: null,
+    avatar: null,
   });
 
-  console.log(tempUser.avater);
-
-  // if(fs.existsSync(tempUser.avatar)){//it is also not working}
-
   if (tempUser.avatar) {
-    console.log("\nexecuting this cloudinary code");
-    //tempUser.avater is valid ex->C:\Users\91740\Desktop\social\backend\assets\temp\avater-1725463005416.png but is why the if block is't executing
     try {
       const cloudinaryResult = await uploadCloudinary(tempUser.avatar, next);
       user.avatar = cloudinaryResult.secure_url;
       fs.unlinkSync(tempUser.avatar);
-    } catch (uploadError) {
+    } catch (err) {
       throw new ApiError(500, "Error uploading file", null, false);
     }
   }

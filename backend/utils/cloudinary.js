@@ -8,17 +8,18 @@ cloudinary.config({
   api_secret: process.env.Cloudinary_Api_Secret,
 });
 
-uploadCloudinary = async (path, next) => {
+const uploadCloudinary = async (path, next) => {
   try {
     //uploading file
     const uploadResult = await cloudinary.uploader.upload(path, {
-      folder: "avater",
+      folder: "avatar",
     });
 
     return uploadResult;
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
 
-module.exports = { uploadCloudinary };
+module.exports = uploadCloudinary;
