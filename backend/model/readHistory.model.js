@@ -6,6 +6,6 @@ const readHistorySchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const readHistoryMOdel = mongoose.model("readHistory", readHistorySchema);
+const readHistoryModel = mongoose.model("readHistory", readHistorySchema);
 
-module.exports = readHistoryMOdel;
+module.exports = readHistoryModel;

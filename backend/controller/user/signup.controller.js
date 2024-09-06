@@ -15,7 +15,7 @@ const signUp = TryCatch(async (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    next(new ApiError(400, "Please fill all the fields", null, false));
+    throw new ApiError(400, "Please fill all the fields", null, false);
   }
 
   //validate the user is already exist or not
