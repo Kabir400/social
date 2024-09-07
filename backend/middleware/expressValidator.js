@@ -1,6 +1,7 @@
 const { check, validationResult } = require("express-validator");
 const ApiError = require("../utils/ApiError");
 
+//user
 const userValidator = [
   check("name")
     .isLength({ min: 1 })
@@ -16,7 +17,7 @@ const userValidator = [
     ),
 ];
 
-const userValidate = (req, res, next) => {
+const Validate = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
     return next();
@@ -26,4 +27,13 @@ const userValidate = (req, res, next) => {
   throw new ApiError(400, errMsg, null, false);
 };
 
-module.exports = { userValidator, userValidate };
+//post
+const postValidator = [
+  check("title").isLength({ min: 1 }).withMessage("Title is required").trim(),
+  check("description")
+    .isLength({ min: 1 })
+    .withMessage("description is required")
+    .trim(),
+];
+
+module.exports = { userValidator, Validate, postValidator };

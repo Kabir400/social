@@ -1,6 +1,7 @@
 const followModel = require("../../model/follow.model.js");
 const postModel = require("../../model/post.model.js");
 const readHistoryModel = require("../../model/readHistory.model.js");
+const userModel = require("../../model/user.model.js");
 
 const TryCatch = require("../../utils/TryCatch.js");
 const ApiResponse = require("../../utils/ApiResponse.js");
@@ -11,15 +12,10 @@ const recomendedPosts = TryCatch(async (req, res, next) => {
 
   const { limit = 10, page = 1 } = req.query;
 
-  // Retrieve followedIds
-  const followedUsers = await followModel
-    .find({ userId: loggedUserId })
-    .select("follwedId -_id");
+  //fetch the user details
+  const user = await userModel.findById(loggedUserId);
 
-  // Extract the followed user IDs into an array
-  const followedIds = followedUsers.map((follow) => follow.follwedId);
-
-  if (followedIds.length === 0) {
+  if (user.followedUserCount === 0) {
     res.json(new ApiResponse(200, null, "You are not following anyone", false));
   }
 
@@ -35,7 +31,7 @@ const recomendedPosts = TryCatch(async (req, res, next) => {
   const posts = await postModel
     .find({
       $and: [
-        { userID: { $in: followedIds } },
+        { userID: { $in: user.followedUsers } },
         { _id: { $nin: watchHistoryIds } },
       ],
     })

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const commentShema = new mongoose.Schema({
-  title: { type: String, required: true },
+  comment: { type: String, required: true },
   userID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",

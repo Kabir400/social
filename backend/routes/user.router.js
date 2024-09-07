@@ -2,7 +2,7 @@ const express = require("express");
 
 const {
   userValidator,
-  userValidate,
+  Validate,
 } = require("../middleware/expressValidator.js");
 
 const upload = require("../middleware/multer.js");
@@ -20,7 +20,7 @@ router.post(
   "/signup",
   upload.single("avatar"),
   userValidator,
-  userValidate,
+  Validate,
   signUp
 );
 router.post("/verify-otp", verifyOtp);
