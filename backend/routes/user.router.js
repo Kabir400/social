@@ -1,5 +1,6 @@
 const express = require("express");
 
+//imports
 const {
   userValidator,
   Validate,
@@ -14,8 +15,15 @@ const {
 
 const login = require("../controller/user/login.controller.js");
 
+const logout = require("../controller/user/logout.controller.js");
+
+const checkLogin = require("../middleware/checkLogin.js");
+const getUsers = require("../controller/user/getUsers.controller.js");
+
+//router setup
 const router = express.Router();
 
+//routes
 router.post(
   "/signup",
   upload.single("avatar"),
@@ -25,5 +33,7 @@ router.post(
 );
 router.post("/verify-otp", verifyOtp);
 router.post("/login", login);
+router.post("/logout", logout);
+router.get("/get-users", checkLogin, getUsers);
 
 module.exports = router;

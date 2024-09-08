@@ -6,7 +6,7 @@ const followUser = async (req, res) => {
   const session = await mongoose.startSession(); // start session
   session.startTransaction(); // Begin the transaction
 
-  const loggedInUserId = req.user.id;
+  const loggedInUserId = req.user._id;
   const { followedUserId } = req.params;
 
   try {
@@ -92,20 +92,11 @@ const followUser = async (req, res) => {
       )
     );
   } catch (error) {
-    // If anything fails, abort the transaction and rollback
+    // Abort the transaction if something goes wrong
     await session.abortTransaction();
-    session.endSession();
-
-    res
-      .status(500)
-      .json(
-        new ApiResponse(
-          500,
-          null,
-          "Something went wrong, transaction rolled back",
-          false
-        )
-      );
+    next(error); // Pass error to error-handling middleware
+  } finally {
+    session.endSession(); // Ensure session ends in all cases
   }
 };
 module.exports = followUser;

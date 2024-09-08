@@ -6,13 +6,13 @@ const likeSchema = new mongoose.Schema({
   //post or comment id
   likeable: {
     type: mongoose.Schema.Types.ObjectId,
-    refPath: "onModel", // Dynamic reference to either 'comments', 'videos', or 'users'
+    refPath: "onModel", // Dynamic reference to either 'comments' or 'users'
     required: true,
   },
   onModel: {
     type: String,
     required: true,
-    enum: ["comments", "videos", "users"], // The actual collections in your database
+    enum: ["comments", "users"], // The actual collections in your database
   },
   createdAt: { type: Date, default: Date.now },
 });

@@ -8,8 +8,8 @@ const postShema = new mongoose.Schema({
     ref: "users",
     required: true,
   },
-  // commentsId: { type: mongoose.Schema.Types.ObjectId, ref: "comments" },
-  // likesId: { type: mongoose.Schema.Types.ObjectId, ref: "likes" },
+  noOfLikes: { type: Number, default: 0 },
+  noOfComments: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 

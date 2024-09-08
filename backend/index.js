@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
 const UserRouter = require("./routes/user.router.js");
+const PostRouter = require("./routes/post.router.js");
 
 const connectDB = require("./config/db.js");
 const multer = require("multer");
@@ -26,6 +27,7 @@ const port = process.env.PORT || 4040;
 
 //router
 server.use("/api/v1", UserRouter);
+server.use("/api/v1", PostRouter);
 
 //..............................................................
 //error middleware

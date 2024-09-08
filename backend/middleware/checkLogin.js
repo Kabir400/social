@@ -7,19 +7,20 @@ const User = require("../model/user.model.js");
 
 const checkLogin = async (req, res, next) => {
   try {
-    const { accesstoken, refreshtoken } = req.cookies;
-    if (!accesstoken && !refreshtoken) {
+    const { accessToken, refreshToken } = req.cookies;
+
+    if (!accessToken && !refreshToken) {
       throw new ApiError(400, "Please login first", null, false);
     }
 
     let token, secret, expiry;
 
-    if (accesstoken) {
-      token = accesstoken;
+    if (accessToken) {
+      token = accessToken;
       secret = process.env.ACCESS_TOKEN_SECRET;
       expiry = process.env.ACCESS_TOKEN_EXPIRY;
-    } else if (refreshtoken) {
-      token = refreshtoken;
+    } else if (refreshToken) {
+      token = refreshToken;
       secret = process.env.REFRESH_TOKEN_SECRET;
       expiry = process.env.REFRESH_TOKEN_EXPIRY;
     }
@@ -33,18 +34,18 @@ const checkLogin = async (req, res, next) => {
     }
 
     // If refreshToken is used, generate new tokens
-    if (!accesstoken && refreshtoken) {
-      const newAccessToken = user.generateToken(
+    if (!accessToken && refreshToken) {
+      const newaccessToken = user.generateToken(
         process.env.ACCESS_TOKEN_SECRET,
         process.env.ACCESS_TOKEN_EXPIRY
       );
-      const newRefreshToken = user.generateToken(
+      const newrefreshToken = user.generateToken(
         process.env.REFRESH_TOKEN_SECRET,
         process.env.REFRESH_TOKEN_EXPIRY
       );
 
-      sendCookies(res, "accessToken", newAccessToken, 5);
-      sendCookies(res, "refreshToken", newRefreshToken, 15);
+      sendCookies(res, "accessToken", newaccessToken, 5);
+      sendCookies(res, "refreshToken", newrefreshToken, 15);
     }
 
     req.user = user;

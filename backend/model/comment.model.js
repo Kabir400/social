@@ -17,6 +17,8 @@ const commentShema = new mongoose.Schema({
     ref: "comments",
     default: null,
   },
+  noOfLikes: { type: Number, default: 0 },
+  noOfReplies: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 
