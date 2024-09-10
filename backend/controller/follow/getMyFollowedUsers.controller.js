@@ -7,7 +7,8 @@ const getMyFollowedUsers = TryCatch(async (req, res, next) => {
   const loggedUserId = req.user._id;
   const followedUsers = await userModel
     .findById(loggedUserId)
-    .populate("followedUsers");
+    .populate("followedUsers")
+    .exec();
 
   res.json(
     new ApiResponse(200, followedUsers, "Followed users fetched successfully")

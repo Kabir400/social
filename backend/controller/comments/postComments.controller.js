@@ -1,24 +1,27 @@
+const mongoose = require("mongoose");
+
 const commentModel = require("../../model/comment.model.js");
 const postModel = require("../../model/post.model.js");
 
 const ApiResponse = require("../../utils/ApiResponse.js");
 
 const postComment = async (req, res, next) => {
+  //start tranjuction
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  const loggedUserId = req.user._id;
+  const { comment } = req.body;
+  const { postId } = req.params;
   try {
-    //start tranjuction
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    const loggedUserId = req.user._id;
-    const { comment } = req.body;
-    const { postId } = req.params;
-
     const Comment = await commentModel.create(
-      {
-        comment: comment,
-        postId: postId,
-        userID: loggedUserId,
-      },
+      [
+        {
+          comment: comment,
+          postId: postId,
+          userID: loggedUserId,
+        },
+      ],
       { session }
     );
 

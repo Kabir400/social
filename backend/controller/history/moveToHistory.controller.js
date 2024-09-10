@@ -4,12 +4,12 @@ const ApiResponse = require("../../utils/ApiResponse");
 const readHistoryModel = require("../../model/readHistory.model.js");
 
 const moveToHistory = TryCatch(async (req, res, next) => {
-  const { id } = req.query;
+  const { postId } = req.params;
   const loggedUserId = req.user._id;
 
   const readHistory = await readHistoryModel.create({
     userId: loggedUserId,
-    postId: id,
+    postId: postId,
   });
 
   return res

@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    followedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
+    followedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     followersCount: { type: Number, default: 0 },
     followedUserCount: { type: Number, default: 0 },
   },

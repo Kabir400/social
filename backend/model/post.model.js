@@ -5,7 +5,7 @@ const postShema = new mongoose.Schema({
   description: { type: String, required: true },
   userID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+    ref: "user",
     required: true,
   },
   noOfLikes: { type: Number, default: 0 },

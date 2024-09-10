@@ -2,15 +2,21 @@ require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const cors = require("cors");
 
 const UserRouter = require("./routes/user.router.js");
 const PostRouter = require("./routes/post.router.js");
+const FollowRouter = require("./routes/follow.router.js");
+const commentRouter = require("./routes/comment.router.js");
+const likeRouter = require("./routes/like.router.js");
+const historyRouter = require("./routes/history.router.js");
 
 const connectDB = require("./config/db.js");
 const multer = require("multer");
 
 const server = express();
 
+server.use(cors());
 server.use(express.json());
 server.use(cookieParser());
 
@@ -28,6 +34,10 @@ const port = process.env.PORT || 4040;
 //router
 server.use("/api/v1", UserRouter);
 server.use("/api/v1", PostRouter);
+server.use("/api/v1", FollowRouter);
+server.use("/api/v1", commentRouter);
+server.use("/api/v1", likeRouter);
+server.use("/api/v1", historyRouter);
 
 //..............................................................
 //error middleware

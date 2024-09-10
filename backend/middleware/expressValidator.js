@@ -36,4 +36,11 @@ const postValidator = [
     .trim(),
 ];
 
-module.exports = { userValidator, Validate, postValidator };
+//comment
+const commentValidator = [
+  check("comment")
+    .isLength({ min: 1 })
+    .withMessage("comment is required")
+    .trim(),
+];
+module.exports = { userValidator, Validate, postValidator, commentValidator };

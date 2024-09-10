@@ -1,18 +1,21 @@
+const mongoose = require("mongoose");
+const ApiResponse = require("../../utils/ApiResponse.js");
+
 const likeModel = require("../../model/like.model.js");
 const postModel = require("../../model/post.model.js");
 
 const toggleLike = async (req, res, next) => {
   const session = await mongoose.startSession();
+  session.startTransaction();
+  const loggedUserId = req.user._id;
+  const { model, id } = req.query;
   try {
-    session.startTransaction();
-    const loggedUserId = req.user._id;
-    const { model, id } = req.query;
-
     // Check if already liked
-    const isLiked = await likeModel.findOne(
-      { user: loggedUserId, likeable: id, onModel: model },
-      { session }
-    );
+    const isLiked = await likeModel.findOne({
+      user: loggedUserId,
+      likeable: id,
+      onModel: model,
+    });
 
     if (isLiked) {
       // Use findOneAndDelete for optimized deletion

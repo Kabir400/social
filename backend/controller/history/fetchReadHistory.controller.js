@@ -1,4 +1,5 @@
-const TryCatch = require("../../utils/TryCatch");
+const TryCatch = require("../../utils/TryCatch.js");
+const ApiResponse = require("../../utils/ApiResponse.js");
 
 const readHistoryModel = require("../../model/readHistory.model.js");
 

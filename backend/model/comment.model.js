@@ -4,17 +4,17 @@ const commentShema = new mongoose.Schema({
   comment: { type: String, required: true },
   userID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+    ref: "user",
     required: true,
   },
   postId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "posts",
+    ref: "post",
     required: true,
   },
   parentCommentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "comments",
+    ref: "comment",
     default: null,
   },
   noOfLikes: { type: Number, default: 0 },

@@ -12,9 +12,11 @@ const likeSchema = new mongoose.Schema({
   onModel: {
     type: String,
     required: true,
-    enum: ["comments", "users"], // The actual collections in your database
+    enum: ["comment", "post"], // The actual collections in your database
   },
   createdAt: { type: Date, default: Date.now },
 });
 
 const Like = mongoose.model("like", likeSchema);
+
+module.exports = Like;

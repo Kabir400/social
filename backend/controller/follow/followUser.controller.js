@@ -1,8 +1,10 @@
+const mongoose = require("mongoose");
+
 const followModel = require("../../model/follow.model.js");
 const userModel = require("../../model/user.model.js");
 const ApiResponse = require("../../utils/ApiResponse.js");
 
-const followUser = async (req, res) => {
+const followUser = async (req, res, next) => {
   const session = await mongoose.startSession(); // start session
   session.startTransaction(); // Begin the transaction
 
