@@ -1,0 +1,140 @@
+/* Full-Screen Layout */
+.post-view-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.full-screen {
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.poster-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.poster-info h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.poster-info p {
+  margin: 5px 0;
+  color: #777;
+}
+
+.post-content {
+  margin-bottom: 30px;
+  flex-grow: 1;
+}
+
+.post-content p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.post-likes {
+  margin: 15px 0;
+}
+
+.post-likes button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.post-likes span {
+  margin-left: 15px;
+  font-size: 16px;
+}
+
+.post-comments {
+  margin-top: 20px;
+  overflow-y: auto;
+}
+
+.post-comments h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.post-comments ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comment-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+
+.comment-item p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.comment-item small {
+  color: #555;
+}
+
+.comment-actions {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.comment-actions button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 10px;
+}
+
+.comment-actions span {
+  margin-right: 20px;
+  font-size: 14px;
+  color: #888;
+}
+
+.comment-form {
+  display: flex;
+  margin-top: 20px;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.comment-form button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

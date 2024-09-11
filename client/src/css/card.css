@@ -1,0 +1,50 @@
+.postCardContainer {
+  margin: 100px auto;
+
+  display: flex;
+  flex-wrap: wrap;
+  height: 100vh;
+  gap: 20px;
+  width: 70vw;
+}
+
+.postcard {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  height: 200px;
+  padding: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  text-align: center;
+}
+
+.post-title {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.post-description {
+  font-size: 1em;
+  color: #777;
+  line-height: 1.5;
+}
+
+.post-creator {
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 10px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.creator-name {
+  font-weight: bold;
+}
+
+.postcard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}

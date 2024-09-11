@@ -1,5 +1,6 @@
 import "../css/nav.css";
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Nav() {
   return (
@@ -8,21 +9,21 @@ function Nav() {
         <div className="navbar-logo">MySite</div>
         <ul className="navbar-links">
           <li>
-            <a href="#posts">Posts</a>
+            <Link to={"/"}>Posts</Link>
           </li>
           <li>
-            <a href="#creator">Creator</a>
+            <Link to={"/"}>Creator</Link>
           </li>
           <li>
-            <a href="#my-account">My Account</a>
+            <Link to={"/myaccount"}>My Account</Link>
           </li>
           <li>
-            <a href="#login">Login</a>
+            <Link to={"/login"}>Login</Link>
           </li>
           <li>
-            <a href="#signup" className="signup-btn">
+            <Link to={"/signup"} className="signup-btn">
               Signup
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
