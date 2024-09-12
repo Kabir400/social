@@ -48,6 +48,27 @@ a {
   background-color: #ff2e00;
 }
 
+.logout {
+  background-color: #ff6347;
+  color: white;
+  padding: 6px 20px;
+  margin-top: -6px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.logout:hover {
+  background-color: #ff4c30;
+  transform: scale(1.05);
+}
+
+.logout:active {
+  transform: scale(0.98);
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .navbar-links {

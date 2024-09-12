@@ -1,0 +1,43 @@
+.verify-otp-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.verify-otp-page form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+.verify-otp-page label {
+  margin-bottom: 8px;
+}
+
+.verify-otp-page input {
+  margin-bottom: 16px;
+  padding: 8px;
+}
+
+.verify-otp-page button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.verify-otp-page button:hover {
+  background-color: #18b83d;
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
+}

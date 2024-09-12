@@ -2,7 +2,7 @@ import "../css/nav.css";
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Nav() {
+function Nav({ isLogin }) {
   return (
     <div>
       <nav className="navbar">
@@ -17,14 +17,20 @@ function Nav() {
           <li>
             <Link to={"/myaccount"}>My Account</Link>
           </li>
-          <li>
-            <Link to={"/login"}>Login</Link>
-          </li>
-          <li>
-            <Link to={"/signup"} className="signup-btn">
-              Signup
-            </Link>
-          </li>
+          {isLogin ? (
+            <li className="logout">Logout</li>
+          ) : (
+            <>
+              <li>
+                <Link to={"/login"}>Login</Link>
+              </li>
+              <li>
+                <Link to={"/signup"} className="signup-btn">
+                  Signup
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </div>

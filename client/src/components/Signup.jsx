@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "../css/signup.css";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
+  const [Data, setData] = useState({
     name: "",
     email: "",
     password: "",
@@ -12,24 +12,42 @@ const Signup = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setData({
+      ...Data,
       [name]: value,
     });
   };
 
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
+    setData({
+      ...Data,
       avatar: e.target.files[0],
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can handle the form submission here
-    // Example: Send formData to the backend
-    console.log("Form submitted:", formData);
+
+    const formData = new FormData();
+    formData.append("avatar", Data.avatar);
+    formData.append("name", Data.name);
+    formData.append("email", Data.email);
+    formData.append("password", Data.password);
+
+    try {
+      const response = await fetch("http://localhost:4040/api/v1/signup", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (data.success == false) {
+        alert(data.message);
+      }
+      alert(data.message);
+    } catch (error) {
+      alert("something went wrong");
+    }
   };
 
   return (
@@ -43,7 +61,7 @@ const Signup = () => {
             id="name"
             name="name"
             placeholder="Enter your name"
-            value={formData.name}
+            value={Data.name}
             onChange={handleChange}
             required
           />
@@ -56,7 +74,7 @@ const Signup = () => {
             id="email"
             name="email"
             placeholder="Enter your email"
-            value={formData.email}
+            value={Data.email}
             onChange={handleChange}
             required
           />
@@ -69,7 +87,7 @@ const Signup = () => {
             id="password"
             name="password"
             placeholder="Enter your password"
-            value={formData.password}
+            value={Data.password}
             onChange={handleChange}
             required
           />
