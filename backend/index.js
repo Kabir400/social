@@ -1,7 +1,6 @@
 require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const cors = require("cors");
 
 const UserRouter = require("./routes/user.router.js");
@@ -24,20 +23,6 @@ server.use(
 );
 server.use(express.json());
 server.use(cookieParser());
-
-server.use(
-  session({
-    secret: process.env.Session_Secret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false, // Set to `true` if using HTTPS
-      httpOnly: true, // Prevents client-side access to the cookie
-      maxAge: 60000 * 5, // 5 minute
-      // sameSite: "lax", // Controls cross-site cookie sending
-    },
-  })
-);
 
 const port = process.env.PORT || 4040;
 

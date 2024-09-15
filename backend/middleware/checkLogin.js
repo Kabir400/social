@@ -44,8 +44,8 @@ const checkLogin = async (req, res, next) => {
         process.env.REFRESH_TOKEN_EXPIRY
       );
 
-      sendCookies(res, "accessToken", newaccessToken, 5);
-      sendCookies(res, "refreshToken", newrefreshToken, 15);
+      sendCookies(res, "accessToken", newaccessToken, "5d");
+      sendCookies(res, "refreshToken", newrefreshToken, "15d");
     }
 
     req.user = user;

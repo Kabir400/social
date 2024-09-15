@@ -41,8 +41,8 @@ const login = TryCatch(async (req, res, next) => {
     process.env.REFRESH_TOKEN_EXPIRY
   );
 
-  sendCookies(res, "accessToken", accessToken, 5);
-  sendCookies(res, "refreshToken", refreshToken, 15);
+  sendCookies(res, "accessToken", accessToken, "5d");
+  sendCookies(res, "refreshToken", refreshToken, "15d");
 
   res.json(new ApiResponse(200, null, "You logged in successfully!"));
 });

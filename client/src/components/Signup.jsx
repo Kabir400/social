@@ -48,9 +48,9 @@ const Signup = ({ setAccessOtp }) => {
       });
       const data = await response.json();
 
-      console.log("data in singup : ", data);
       if (data.success == false) {
         alert(data.message);
+        setLoding(false);
       } else {
         alert(data.message);
         setAccessOtp(true);

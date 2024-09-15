@@ -4,10 +4,13 @@ const ApiResponse = require("../../utils/ApiResponse.js");
 const uploadCloudinary = require("../../utils/cloudinary.js");
 const { generateOtp, sendOtp } = require("../../utils/sendMail.js");
 const sendCookies = require("../../utils/sendCookies.js");
+const otpToken = require("../../utils/otpToken.js");
 
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
 
 const userModel = require("../../model/user.model.js");
+const otpModel = require("../../model/otp.model.js");
 
 //...........................................................
 //singup controller
@@ -29,16 +32,29 @@ const signUp = TryCatch(async (req, res, next) => {
   const otp = generateOtp();
   const response = await sendOtp(email, otp, next);
 
-  if (response) {
-    req.session.tempUser = {
+  const OtpToken = otpToken(
+    {
       name,
       email,
       password,
-      otp,
       avatar: req.file ? req.file.path : null,
-    };
+    },
+    process.env.OTP_SECRET,
+    "5m"
+  );
 
+  //insert/override otp in db
+  const tempUser = await otpModel.findOneAndUpdate(
+    { email },
+    { email, otp },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+
+  if (response && otpToken && tempUser) {
+    sendCookies(res, "otpToken", OtpToken, "5m");
     res.json(new ApiResponse(200, null, "OTP sent to your email"));
+  } else {
+    throw new ApiError(500, "Something went wrong", null, false);
   }
 });
 
@@ -46,15 +62,16 @@ const signUp = TryCatch(async (req, res, next) => {
 
 const verifyOtp = TryCatch(async (req, res, next) => {
   const { otp } = req.body;
-  const tempUser = req.session.tempUser;
+  const { otpToken } = req.cookies;
 
-  console.log(req.session);
+  const tempUser = jwt.verify(otpToken, process.env.OTP_SECRET);
+  const decoded = await otpModel.findOne({ email: tempUser.email });
 
   if (!tempUser) {
     throw new ApiError(400, "Session expired or Invalid Otp", null, false);
   }
 
-  if (tempUser.otp !== otp) {
+  if (decoded.otp !== otp) {
     throw new ApiError(400, "Invalid OTP", null, false);
   }
 
@@ -86,11 +103,10 @@ const verifyOtp = TryCatch(async (req, res, next) => {
   );
 
   await user.save();
+  await otpModel.findOneAndDelete({ email: decoded.email });
 
-  req.session.tempUser = null;
-
-  sendCookies(res, "accessToken", accessToken, 5);
-  sendCookies(res, "refreshToken", refreshToken, 15);
+  sendCookies(res, "accessToken", accessToken, "5d");
+  sendCookies(res, "refreshToken", refreshToken, "15d");
 
   res.json(new ApiResponse(200, null, "User registered successfully", true));
 });

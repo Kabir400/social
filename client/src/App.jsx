@@ -67,7 +67,12 @@ function AppRoutes({ isLogin, setIsLogin, accessOtp, setAccessOtp }) {
             <Route path="/reply" element={<Reply />} />
           </>
         )}
-        {accessOtp && <Route path="/otp" element={<Otp />} />}
+        {accessOtp && (
+          <Route
+            path="/otp"
+            element={<Otp setLogin={setIsLogin} setAccessOtp={setAccessOtp} />}
+          />
+        )}
         <Route
           path="*"
           element={<div className="not-found">404 Page Not Found</div>}

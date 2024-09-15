@@ -21,31 +21,26 @@ const Otp = ({ setAccessOtp, setLogin }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ otp }),
+        credentials: "include",
       });
 
-      console.log("response is : ", res);
-
-      // if (!res.ok) {
-      //   throw new Error("Failed to verify OTP. Please try again.");
-      // }
-
       const data = await res.json();
-      console.log("data is : ", data);
 
       if (data.success) {
         setSuccess("OTP verified successfully!");
         setError("");
         setAccessOtp(false);
         setLogin(true);
+        setLoding(false);
         navigate("/");
       } else {
+        setLoding(false);
         setError(data.message);
         setSuccess("");
       }
     } catch (err) {
       setError(err.message);
       setSuccess("");
-    } finally {
       setLoding(false);
     }
   };

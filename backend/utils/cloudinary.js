@@ -17,7 +17,6 @@ const uploadCloudinary = async (path, next) => {
 
     return uploadResult;
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
