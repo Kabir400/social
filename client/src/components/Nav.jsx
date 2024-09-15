@@ -1,8 +1,30 @@
 import "../css/nav.css";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function Nav({ isLogin }) {
+function Nav({ isLogin, setIsLogin }) {
+  const navigate = useNavigate();
+  const logoutHandler = async () => {
+    try {
+      const res = await fetch("http://localhost:4040/api/v1/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!data.success) {
+        alert(data.message);
+      }
+      alert(data.message);
+      setIsLogin(false);
+      navigate("/login");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <div>
       <nav className="navbar">
@@ -19,7 +41,9 @@ function Nav({ isLogin }) {
               <li>
                 <Link to={"/myaccount"}>My Account</Link>
               </li>
-              <li className="logout">Logout</li>
+              <li className="logout" onClick={logoutHandler}>
+                Logout
+              </li>
             </>
           ) : (
             <>

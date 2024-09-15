@@ -19,6 +19,7 @@ const logout = require("../controller/user/logout.controller.js");
 
 const checkLogin = require("../middleware/checkLogin.js");
 const getUsers = require("../controller/user/getUsers.controller.js");
+const isLoggedIn = require("../controller/user/isLoggedIn.controller.js");
 
 //router setup
 const router = express.Router();
@@ -35,5 +36,6 @@ router.post("/verify-otp", verifyOtp);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/get-users", checkLogin, getUsers);
+router.get("/islogin", checkLogin, isLoggedIn);
 
 module.exports = router;

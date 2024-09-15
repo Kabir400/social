@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import "../css/login.css";
-const Login = () => {
+const Login = ({ setIsLogin }) => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+  const [loding, setLoding] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,10 +18,33 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login form submission logic here
-    console.log("Login Data:", loginData);
+    setLoding(true);
+    try {
+      const response = await fetch("http://localhost:4040/api/v1/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(loginData),
+      });
+      const data = await response.json();
+
+      if (data.success == false) {
+        alert(data.message);
+        setLoding(false);
+      } else {
+        alert(data.message);
+        setIsLogin(true);
+        setLoding(false);
+        navigate("/");
+      }
+    } catch (error) {
+      alert(error.message);
+      setLoding(false);
+    }
   };
 
   return (
@@ -51,7 +77,7 @@ const Login = () => {
           />
         </div>
 
-        <button type="submit">Log In</button>
+        <button type="submit">{loding ? "Loding..." : "Log In"}</button>
       </form>
     </div>
   );

@@ -9,8 +9,8 @@ function Card() {
           This is a brief description of the post. It provides an overview of
           the content and draws the reader in.
         </p>
-        <p class="post-creator">
-          Created by: <span class="creator-name">John Doe</span>
+        <p className="post-creator">
+          Created by: <span className="creator-name">John Doe</span>
         </p>
       </div>
     </div>

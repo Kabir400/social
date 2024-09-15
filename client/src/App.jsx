@@ -41,18 +41,33 @@ function AppRoutes({ isLogin, setIsLogin, accessOtp, setAccessOtp }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLogin) {
-      navigate("/login");
-    }
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:4040/api/v1/islogin", {
+          method: "GET",
+          credentials: "include",
+        });
+        const data = await res.json();
+        console.log(data);
+        if (data.success) {
+          setIsLogin(true);
+        } else {
+          setIsLogin(false);
+          navigate("/login");
+        }
+      } catch (err) {
+        alert(err.message);
+      }
+    })();
   }, [isLogin]);
 
   return (
     <>
-      <Nav isLogin={isLogin} />
+      <Nav isLogin={isLogin} setIsLogin={setIsLogin} />
       <Routes>
         {!isLogin ? (
           <>
-            <Route path="/login" element={<Login setLogin={setIsLogin} />} />
+            <Route path="/login" element={<Login setIsLogin={setIsLogin} />} />
             <Route
               path="/signup"
               element={<Signup setAccessOtp={setAccessOtp} />}
