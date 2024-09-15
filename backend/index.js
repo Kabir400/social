@@ -16,16 +16,26 @@ const multer = require("multer");
 
 const server = express();
 
-server.use(cors());
+server.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 server.use(express.json());
 server.use(cookieParser());
 
 server.use(
   session({
-    secret: "your-secret-key", // Used to sign the session ID cookie
-    resave: false, // Prevents session from being saved back to the session store unless modified
-    saveUninitialized: false, // Prevents uninitialized sessions from being saved
-    cookie: { secure: false }, // Use 'true' if you're using HTTPS
+    secret: process.env.Session_Secret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to `true` if using HTTPS
+      httpOnly: true, // Prevents client-side access to the cookie
+      maxAge: 60000 * 5, // 5 minute
+      // sameSite: "lax", // Controls cross-site cookie sending
+    },
   })
 );
 

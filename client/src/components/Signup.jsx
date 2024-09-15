@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import "../css/signup.css";
 
-const Signup = () => {
+const Signup = ({ setAccessOtp }) => {
+  const navigate = useNavigate();
+
+  const [loding, setLoding] = useState(false);
   const [Data, setData] = useState({
     name: "",
     email: "",
@@ -28,6 +32,8 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoding(true);
+
     const formData = new FormData();
     formData.append("avatar", Data.avatar);
     formData.append("name", Data.name);
@@ -37,16 +43,24 @@ const Signup = () => {
     try {
       const response = await fetch("http://localhost:4040/api/v1/signup", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
       const data = await response.json();
 
+      console.log("data in singup : ", data);
       if (data.success == false) {
         alert(data.message);
+      } else {
+        alert(data.message);
+        setAccessOtp(true);
+        setLoding(false);
+        navigate("/otp");
       }
-      alert(data.message);
     } catch (error) {
-      alert("something went wrong");
+      alert(error.message);
+      setLoding(false);
+      setAccessOtp(false);
     }
   };
 
@@ -104,7 +118,7 @@ const Signup = () => {
           />
         </div>
 
-        <button type="submit">Sign Up</button>
+        <button type="submit">{loding ? "Loading..." : "Sign Up"}</button>
       </form>
     </div>
   );

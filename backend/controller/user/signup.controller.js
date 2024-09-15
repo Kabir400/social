@@ -48,6 +48,8 @@ const verifyOtp = TryCatch(async (req, res, next) => {
   const { otp } = req.body;
   const tempUser = req.session.tempUser;
 
+  console.log(req.session);
+
   if (!tempUser) {
     throw new ApiError(400, "Session expired or Invalid Otp", null, false);
   }
@@ -90,7 +92,7 @@ const verifyOtp = TryCatch(async (req, res, next) => {
   sendCookies(res, "accessToken", accessToken, 5);
   sendCookies(res, "refreshToken", refreshToken, 15);
 
-  res.json(new ApiResponse(200, null, "User registered successfully"));
+  res.json(new ApiResponse(200, null, "User registered successfully", true));
 });
 
 module.exports = { signUp, verifyOtp };
