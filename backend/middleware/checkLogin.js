@@ -27,7 +27,7 @@ const checkLogin = async (req, res, next) => {
 
     // Decode and verify token
     const decoded = await jwt.verify(token, secret);
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id).select("-password");
 
     if (!user) {
       throw new ApiError(400, "Invalid Token", null, false);

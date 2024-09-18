@@ -1,49 +1,53 @@
 import React, { useState } from "react";
 import "../css/Otp.css"; // Ensure you import the CSS file
 
-import { useNavigate } from "react-router-dom";
-const Otp = ({ setAccessOtp, setLogin }) => {
-  const navigate = useNavigate();
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+//verify otp
+const otpHandler = async (otp) => {
+  const response = await fetch("http://localhost:4040/api/v1/verify-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ otp }),
+  });
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("something went wrong");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+const Otp = ({ setAccessOtp }) => {
   const [otp, setOtp] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [loding, setLoding] = useState(false);
+  const queryClient = useQueryClient();
 
+  //mulataing logic
+  const { mutate, isPending, isSuccess, isError, error, data, reset } =
+    useMutation({
+      mutationFn: otpHandler,
+    });
+
+  //sumbmit hander for otp verification
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoding(true);
-
-    try {
-      const res = await fetch("http://localhost:4040/api/v1/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ otp }),
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        setSuccess("OTP verified successfully!");
-        setError("");
-        setAccessOtp(false);
-        setLogin(true);
-        setLoding(false);
-        navigate("/");
-      } else {
-        setLoding(false);
-        setError(data.message);
-        setSuccess("");
-      }
-    } catch (err) {
-      setError(err.message);
-      setSuccess("");
-      setLoding(false);
-    }
+    mutate(otp);
   };
+
+  if (isSuccess) {
+    alert(data.message);
+    queryClient.invalidateQueries(["isLogin"]);
+    setAccessOtp(false);
+    reset();
+  }
 
   return (
     <div className="verify-otp-page">
@@ -59,9 +63,9 @@ const Otp = ({ setAccessOtp, setLogin }) => {
             required
           />
         </div>
-        <button type="submit">{loding ? "Loading..." : "Verify"}</button>
-        {error && <p className="error">{error}</p>}
-        {success && <p className="success">{success}</p>}
+        <button type="submit">{isPending ? "Loading..." : "Verify"}</button>
+        {isError && <p className="error">{error.message}</p>}
+        {isSuccess && <p className="success">Otp verified successfully</p>}
       </form>
     </div>
   );

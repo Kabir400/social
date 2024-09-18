@@ -4,6 +4,7 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import "./css/404.css";
 
@@ -18,6 +19,7 @@ import Otp from "./components/Otp.jsx";
 
 import { useState, useEffect } from "react";
 
+//...............................................................
 function App() {
   //states
   const [accessOtp, setAccessOtp] = useState(false);
@@ -35,39 +37,53 @@ function App() {
     </Router>
   );
 }
+//...........................................................
 
+//isLogin handler
+
+const isLoginHandler = async () => {
+  const res = await fetch("http://localhost:4040/api/v1/islogin", {
+    method: "GET",
+    credentials: "include",
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+
+  return data.data;
+};
+
+//..............................................................
 //seperate comonent for for useNavigate logic
 function AppRoutes({ isLogin, setIsLogin, accessOtp, setAccessOtp }) {
   const navigate = useNavigate();
 
+  const { isError, error, isSuccess } = useQuery({
+    queryKey: ["isLogin"],
+    queryFn: isLoginHandler,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+    retry: false,
+  });
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("http://localhost:4040/api/v1/islogin", {
-          method: "GET",
-          credentials: "include",
-        });
-        const data = await res.json();
-        console.log(data);
-        if (data.success) {
-          setIsLogin(true);
-        } else {
-          setIsLogin(false);
-          navigate("/login");
-        }
-      } catch (err) {
-        alert(err.message);
-      }
-    })();
-  }, [isLogin]);
+    if (isSuccess) {
+      setIsLogin(true);
+      navigate("/");
+    } else if (isError) {
+      setIsLogin(false);
+      navigate("/login");
+    }
+  }, [isSuccess, isError, error, isLogin]);
 
   return (
     <>
-      <Nav isLogin={isLogin} setIsLogin={setIsLogin} />
+      <Nav isLogin={isLogin} />
       <Routes>
         {!isLogin ? (
           <>
-            <Route path="/login" element={<Login setIsLogin={setIsLogin} />} />
+            <Route path="/login" element={<Login />} />
             <Route
               path="/signup"
               element={<Signup setAccessOtp={setAccessOtp} />}
@@ -83,10 +99,7 @@ function AppRoutes({ isLogin, setIsLogin, accessOtp, setAccessOtp }) {
           </>
         )}
         {accessOtp && (
-          <Route
-            path="/otp"
-            element={<Otp setLogin={setIsLogin} setAccessOtp={setAccessOtp} />}
-          />
+          <Route path="/otp" element={<Otp setAccessOtp={setAccessOtp} />} />
         )}
         <Route
           path="*"
@@ -96,5 +109,5 @@ function AppRoutes({ isLogin, setIsLogin, accessOtp, setAccessOtp }) {
     </>
   );
 }
-
+//................................................................
 export default App;

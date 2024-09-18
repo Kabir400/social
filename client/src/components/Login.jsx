@@ -1,14 +1,36 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import "../css/login.css";
-const Login = ({ setIsLogin }) => {
+
+//...............................................
+
+const loginHandler = async (loginData) => {
+  const response = await fetch("http://localhost:4040/api/v1/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(loginData),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  return data;
+};
+
+//.................................................
+const Login = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
-  const [loding, setLoding] = useState(false);
-  const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,33 +40,20 @@ const Login = ({ setIsLogin }) => {
     });
   };
 
+  //mutation logic for login
+  const { mutate, isPending } = useMutation({
+    mutationFn: loginHandler,
+    onSuccess: (data) => {
+      alert(data.message);
+      queryClient.invalidateQueries(["isLogin"]);
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoding(true);
-    try {
-      const response = await fetch("http://localhost:4040/api/v1/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(loginData),
-      });
-      const data = await response.json();
-
-      if (data.success == false) {
-        alert(data.message);
-        setLoding(false);
-      } else {
-        alert(data.message);
-        setIsLogin(true);
-        setLoding(false);
-        navigate("/");
-      }
-    } catch (error) {
-      alert(error.message);
-      setLoding(false);
-    }
+    mutate(loginData);
   };
 
   return (
@@ -77,7 +86,7 @@ const Login = ({ setIsLogin }) => {
           />
         </div>
 
-        <button type="submit">{loding ? "Loding..." : "Log In"}</button>
+        <button type="submit">{isPending ? "Loding..." : "Log In"}</button>
       </form>
     </div>
   );

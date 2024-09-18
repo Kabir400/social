@@ -1,28 +1,46 @@
 import "../css/nav.css";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-function Nav({ isLogin, setIsLogin }) {
-  const navigate = useNavigate();
-  const logoutHandler = async () => {
-    try {
-      const res = await fetch("http://localhost:4040/api/v1/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-      const data = await res.json();
-      if (!data.success) {
+//....................................
+
+const logoutRequest = async () => {
+  const res = await fetch("http://localhost:4040/api/v1/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
+
+//........................................
+function Nav({ isLogin }) {
+  const queryClient = useQueryClient();
+
+  //mutation logic for logout
+  const mutation = useMutation({
+    mutationFn: logoutRequest,
+    onSuccess: (data) => {
+      if (data.success) {
         alert(data.message);
+        queryClient.invalidateQueries(["isLogin"]);
       }
-      alert(data.message);
-      setIsLogin(false);
-      navigate("/login");
-    } catch (err) {
-      alert(err.message);
-    }
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
+
+  // Logout handler
+  const logoutHandler = () => {
+    mutation.mutate();
   };
 
   return (

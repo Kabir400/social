@@ -1,12 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useMutation } from "@tanstack/react-query";
 import "../css/signup.css";
+
+// Signup handler (Mutation function)
+const signupHandler = async (formData) => {
+  const response = await fetch("http://localhost:4040/api/v1/signup", {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("something went wrong");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
 
 const Signup = ({ setAccessOtp }) => {
   const navigate = useNavigate();
 
-  const [loding, setLoding] = useState(false);
   const [Data, setData] = useState({
     name: "",
     email: "",
@@ -29,10 +49,14 @@ const Signup = ({ setAccessOtp }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Corrected Mutation hook
+  const { mutate, isPending, isSuccess, isError, error, data, reset } =
+    useMutation({
+      mutationFn: signupHandler,
+    });
 
-    setLoding(true);
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     const formData = new FormData();
     formData.append("avatar", Data.avatar);
@@ -40,29 +64,21 @@ const Signup = ({ setAccessOtp }) => {
     formData.append("email", Data.email);
     formData.append("password", Data.password);
 
-    try {
-      const response = await fetch("http://localhost:4040/api/v1/signup", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
-      const data = await response.json();
-
-      if (data.success == false) {
-        alert(data.message);
-        setLoding(false);
-      } else {
-        alert(data.message);
-        setAccessOtp(true);
-        setLoding(false);
-        navigate("/otp");
-      }
-    } catch (error) {
-      alert(error.message);
-      setLoding(false);
-      setAccessOtp(false);
-    }
+    // Trigger the mutation
+    mutate(formData);
   };
+
+  if (isError) {
+    alert(error.message);
+    reset(); //reset the state to avoid duplicate error
+  }
+
+  if (isSuccess && data) {
+    alert(data.message);
+    setAccessOtp(true);
+    navigate("/otp");
+    reset();
+  }
 
   return (
     <div className="signup-container">
@@ -118,7 +134,7 @@ const Signup = ({ setAccessOtp }) => {
           />
         </div>
 
-        <button type="submit">{loding ? "Loading..." : "Sign Up"}</button>
+        <button type="submit">{isPending ? "Loading..." : "Sign Up"}</button>
       </form>
     </div>
   );
